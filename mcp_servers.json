@@ -1,0 +1,16 @@
+{
+  "mcpServers": {
+    "mock_server": {
+      "command": "python",
+      "args": ["backend/integrations/mcp/simple_server.py"]
+    },
+    "filesystem": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-filesystem",
+        "c:/Users/nagav/Downloads/Naga_MyHub/chatbot_agents/uploads"
+      ]
+    }
+  }
+}

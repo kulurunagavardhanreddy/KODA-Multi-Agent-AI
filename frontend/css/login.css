@@ -1,0 +1,151 @@
+body {
+    margin: 0;
+    padding: 0;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    background-color: #343541;
+    color: #d1d5db;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+.auth-container {
+    background: #202123;
+    padding: 40px;
+    border-radius: 12px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
+    width: 100%;
+    max-width: 400px;
+    text-align: center;
+}
+
+.logo {
+    margin-bottom: 25px;
+    font-size: 2.2rem;
+    font-weight: bold;
+    color: #10a37f;
+    letter-spacing: 2px;
+}
+
+.tabs {
+    display: flex;
+    margin-bottom: 25px;
+    border-bottom: 1px solid #565869;
+}
+
+.tab {
+    flex: 1;
+    padding: 12px;
+    cursor: pointer;
+    font-size: 1rem;
+    font-weight: 600;
+    color: #8e8ea0;
+    transition: all 0.3s ease;
+}
+
+.tab.active {
+    color: #10a37f;
+    border-bottom: 2px solid #10a37f;
+}
+
+.input-group {
+    margin-bottom: 18px;
+    text-align: left;
+}
+
+.input-group label {
+    display: block;
+    margin-bottom: 6px;
+    font-size: 0.85rem;
+    color: #c5c5d2;
+}
+
+.input-group input {
+    width: 100%;
+    padding: 12px;
+    border-radius: 6px;
+    border: 1px solid #565869;
+    background-color: #40414f;
+    color: white;
+    box-sizing: border-box;
+}
+
+.input-group input:focus {
+    outline: none;
+    border-color: #10a37f;
+    background-color: #444654;
+}
+
+.submit-btn {
+    width: 100%;
+    padding: 14px;
+    background-color: #10a37f;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-size: 1rem;
+    font-weight: bold;
+    cursor: pointer;
+    margin-top: 10px;
+    transition: background 0.2s;
+}
+
+.submit-btn:hover {
+    background-color: #0b8a69;
+}
+
+.divider {
+    display: flex;
+    align-items: center;
+    text-align: center;
+    color: #565869;
+    font-size: 0.8rem;
+    margin: 20px 0;
+}
+
+.divider::before, .divider::after {
+    content: '';
+    flex: 1;
+    border-bottom: 1px solid #565869;
+}
+
+.divider:not(:empty)::before { margin-right: 1em; }
+.divider:not(:empty)::after { margin-left: 1em; }
+
+.google-btn {
+    width: 100%;
+    padding: 12px;
+    background-color: white;
+    color: #374151;
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+    font-size: 0.95rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    font-weight: 600;
+    transition: background 0.2s;
+}
+
+.google-btn:hover { background-color: #f3f4f6; }
+
+.guest-link {
+    margin-top: 20px;
+    font-size: 0.9rem;
+}
+
+.guest-link a {
+    color: #10a37f;
+    text-decoration: none;
+}
+
+.error-message {
+    color: #ff4a4a;
+    margin-top: 20px;
+    font-size: 0.85rem;
+    min-height: 20px;
+    font-weight: 500;
+}

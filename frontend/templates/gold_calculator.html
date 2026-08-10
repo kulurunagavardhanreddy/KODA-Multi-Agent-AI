@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gold Price Calculator - Kurnool</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f4f7f6;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+        }
+        .calculator-card {
+            background: white;
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            width: 100%;
+            max-width: 400px;
+        }
+        h2 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 1.5rem;
+        }
+        .input-group {
+            margin-bottom: 1rem;
+        }
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: #666;
+            font-weight: 500;
+        }
+        input, select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 16px;
+            box-sizing: border-box;
+        }
+        input:focus, select:focus {
+            outline: none;
+            border-color: #f39c12;
+        }
+        button {
+            width: 100%;
+            padding: 12px;
+            background-color: #f39c12;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background 0.3s;
+            margin-top: 10px;
+        }
+        button:hover {
+            background-color: #e67e22;
+        }
+        .result-box {
+            margin-top: 1.5rem;
+            padding: 1rem;
+            background-color: #fff8e1;
+            border-radius: 6px;
+            border-left: 5px solid #f39c12;
+            display: none;
+        }
+        .result-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.5rem;
+            font-size: 14px;
+        }
+        .result-row.total {
+            font-weight: bold;
+            font-size: 18px;
+            color: #333;
+            border-top: 1px solid #ddd;
+            padding-top: 0.5rem;
+            margin-top: 0.5rem;
+        }
+        .note {
+            font-size: 12px;
+            color: #888;
+            margin-top: 1rem;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+
+<div class="calculator-card">
+    <h2>🥇 Gold Calculator</h2>
+    
+    <div class="input-group">
+        <label for="weight">Weight (grams)</label>
+        <input type="number" id="weight" placeholder="e.g., 10 or 10.5" step="0.01" min="0">
+    </div>
+
+    <div class="input-group">
+        <label for="purity">Purity</label>
+        <select id="purity">
+            <option value="22K">22 Karat (916)</option>
+            <option value="24K">24 Karat (999)</option>
+        </select>
+    </div>
+
+    <button onclick="calculateGold()">Calculate Price</button>
+
+    <div id="result" class="result-box">
+        <div class="result-row">
+            <span>Base Price:</span>
+            <span id="basePrice">₹0.00</span>
+        </div>
+        <div class="result-row">
+            <span>GST (3%):</span>
+            <span id="gstAmount">₹0.00</span>
+        </div>
+        <div class="result-row total">
+            <span>Total Cost:</span>
+            <span id="totalPrice">₹0.00</span>
+        </div>
+    </div>
+
+    <p class="note">Rates based on Kurnool, May 9, 2026.<br>22K: ₹1,39,885/10g | 24K: ₹1,52,602/10g</p>
+</div>
+
+<script>
+    function calculateGold() {
+        // Get input values
+        const weight = parseFloat(document.getElementById('weight').value);
+        const purity = document.getElementById('purity').value;
+        const resultBox = document.getElementById('result');
+
+        // Validation
+        if (isNaN(weight) || weight <= 0) {
+            alert("Please enter a valid weight greater than 0.");
+            resultBox.style.display = 'none';
+            return;
+        }
+
+        // Rates per 10 grams (May 9, 2026)
+        const rates = {
+            "22K": 139885,
+            "24K": 152602
+        };
+
+        // Calculate
+        const ratePerGram = rates[purity] / 10;
+        const basePrice = weight * ratePerGram;
+        const gst = basePrice * 0.03;
+        const total = basePrice + gst;
+
+        // Display Results
+        document.getElementById('basePrice').innerText = '₹' + basePrice.toLocaleString('en-IN', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+        document.getElementById('gstAmount').innerText = '₹' + gst.toLocaleString('en-IN', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+        document.getElementById('totalPrice').innerText = '₹' + total.toLocaleString('en-IN', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+        
+        resultBox.style.display = 'block';
+    }
+</script>
+
+</body>
+</html>

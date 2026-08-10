@@ -1,0 +1,67 @@
+[ USER PROMPT / PDF UPLOAD ]
+                                            |
+                                            v
+    --------------------------------[ FASTAPI GATEWAY ]--------------------------------
+    |                                       |                                         |
+    |  [ PYJWT ]                    [ HTTPBEARER ]                  [ UUID ]          |
+    |  (Stateless Security)         (Token Extraction)              (User Isolation)  |
+    ----------------------------------------|------------------------------------------
+                                            |
+                                            v
+    ----------------------------[ LANGGRAPH AGENT ENGINE ]-----------------------------
+    |                                       |                                         |
+    | [ SYSTEM MESSAGE ]           [ GEMINI 2.5 FLASH ]           [ STATEGRAPH ]      |
+    | (Dynamic Philosophy)         (Core Reasoning LLM)           (Reasoning Loop)    |
+    ----------------------------------------|------------------------------------------
+                                            |
+                      ( Decision Point: Which Tool is Needed? )
+             /                              |                               \
+            v                               v                                v
+[ DOCUMENT_SEARCH_TOOL ]          [ WEB_SEARCH_TOOL ]              [ @TOOL DECORATOR ]
+        |                                   |                                |
+  [ QDRANT VECTOR DB ]            [ DUCKDUCKGO SEARCH ]            [ LANGCHAIN CORE ]
+  (Private Retrieval)             (Real-time Fact Finding)         (Agentic Capability)
+        |                                   |                                |
+  [ ALL-MINILM-L6-V2 ]            [ METRIC CONVERSION ]            [ CHAT HISTORY ]
+  (Local BERT Embeddings)         (Kilometer Standardization)      (SQLite Persistence)
+            \                               |                               /
+             ---------------------------------------------------------------
+                                            |
+                                            v
+    -----------------------------[ RESPONSE SYNTHESIS ]-------------------------------
+    |                                                                                |
+    |  - [ CALLBACK HANDLERS ]: (Thought Process Logging/Visibility)                 |
+    |  - [ LRU_CACHE ]: (Model Singleton / RAM Performance)                          |
+    |  - [ SQLITE3 ]: (Message & Session Tracking)                                   |
+    ----------------------------------------|-----------------------------------------
+                                            |
+                                            v
+                                [ FINAL ANSWER TO USER ]
+
+
+
+
+                User
+                  │
+                  ▼
+             Supervisor
+                  │
+          get_agent_tools()
+                  │
+      ┌───────────┴───────────┐
+      │                       │
+ Local LangChain Tools     MCP Tools
+      │                       │
+      └───────────┬───────────┘
+                  │
+             Planner chooses
+                  │
+         asyncio.gather(...)
+                  │
+      ┌───────────┴────────────┐
+      │                        │
+ Local Python Tool        MCP Server
+                              │
+                    Filesystem Server
+                              │
+                       Read/Write Files

@@ -1,0 +1,318 @@
+﻿/* ==============================================
+   KODA Panels — Sources, Code Blocks & Action Buttons
+   Sources panel, scroll button, code blocks, inline edit UI
+============================================== */
+/* --- Clickable Sources Button --- */
+.agent-summary.sources-btn {
+  cursor: pointer;
+  transition: background 0.2s, border-color 0.2s;
+}
+.agent-summary.sources-btn:hover {
+  background: rgba(255,255,255,0.1);
+  border-color: rgba(255,255,255,0.3);
+}
+
+/* --- Sources Right Panel (Slide-over Drawer) --- */
+.sources-panel {
+  position: fixed; top: 0; right: -360px; width: 340px; height: 100vh;
+  background-color: #171717; border-left: 1px solid #2f2f2f;
+  z-index: 2500; transition: right 0.3s cubic-bezier(0.4, 0, 0.2, 1), width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  display: flex; flex-direction: column; box-shadow: -4px 0 25px rgba(0,0,0,0.5);
+}
+.sources-panel.open { right: 0; }
+.sources-panel.expanded { width: 50vw; min-width: 340px; max-width: 800px; }
+
+/* --- Shift Main Content Left on Desktop when Sources Open --- */
+@media (min-width: 1025px) {
+  body.sources-open .main-content {
+    margin-right: 340px;
+  }
+}
+
+.sources-header {
+  padding: 16px 20px; border-bottom: 1px solid #2f2f2f;
+  display: flex; justify-content: space-between; align-items: center;
+}
+.sources-header h3 { margin: 0; font-size: 1.1rem; font-weight: 600; color: #ececf1; display: flex; align-items: center; gap: 8px; }
+.close-sources-btn {
+  background: transparent; border: none; color: #b4b4b4; cursor: pointer; font-size: 1.2rem;
+  display: flex; align-items: center; justify-content: center; padding: 4px; border-radius: 4px; transition: color 0.2s;
+}
+.close-sources-btn:hover { background: rgba(255,255,255,0.1); color: #ececf1; }
+
+.sources-list {
+  padding: 16px; overflow-y: auto; display: flex; flex-direction: column; gap: 12px;
+}
+
+.source-item {
+  display: flex; align-items: flex-start; gap: 12px; padding: 12px;
+  background: #212121; border: 1px solid rgba(255,255,255,0.1); border-radius: 8px;
+  text-decoration: none; color: #ececf1; transition: background 0.2s, border-color 0.2s;
+}
+a.source-item:hover { background: #2f2f2f; border-color: #3a7bd5; }
+
+.source-icon { font-size: 1.2rem; margin-top: 2px; }
+.source-info { display: flex; flex-direction: column; overflow: hidden; width: 100%; }
+.source-domain { font-weight: 600; font-size: 0.9rem; margin-bottom: 4px; }
+.source-url { font-size: 0.75rem; color: #b4b4b4; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+/* Light Mode for Sources */
+body.light-mode .agent-summary.sources-btn:hover { background: rgba(0,0,0,0.08); border-color: rgba(0,0,0,0.2); }
+body.light-mode .sources-panel { background-color: #f9f9f9; border-left-color: #e5e7eb; box-shadow: -4px 0 25px rgba(0,0,0,0.05); }
+body.light-mode .sources-header { border-bottom-color: #e5e7eb; }
+body.light-mode .sources-header h3 { color: #111827; }
+body.light-mode .close-sources-btn { color: #6b7280; }
+body.light-mode .close-sources-btn:hover { background: rgba(0,0,0,0.05); color: #111827; }
+body.light-mode .source-item { background: #ffffff; border-color: #e5e7eb; color: #111827; }
+body.light-mode a.source-item:hover { background: #f3f4f6; border-color: #3a7bd5; }
+body.light-mode .source-url { color: #6b7280; }
+
+/* --- Floating Scroll to Bottom Button --- */
+#scroll-bottom-btn {
+  position: absolute;
+  bottom: 100px;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: #444654;
+  color: #ececf1;
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.2s, visibility 0.2s;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+  z-index: 50;
+}
+
+#scroll-bottom-btn.show {
+  opacity: 1;
+  visibility: visible;
+}
+
+#scroll-bottom-btn:hover {
+  background-color: #343541;
+}
+
+/* --- Code Block Styling --- */
+.code-wrapper {
+  background-color: #0d1117; /* Matches GitHub Dark theme background */
+  border-radius: 6px;
+  margin: 16px 0;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  position: relative;
+}
+
+.code-header {
+  display: flex;
+  justify-content: space-between; /* Pushes language to left, button to right */
+  align-items: center;
+  background-color: #2b2b2b;
+  padding: 8px 12px;
+  border-top-left-radius: 6px;
+  border-top-right-radius: 6px;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.code-lang {
+  color: #b4b4b4;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  font-weight: bold;
+}
+
+.copy-btn {
+  position: relative;
+  right: auto;
+  bottom: auto;
+  background: transparent;
+  color: #ececf1;
+  border: none;
+  font-size: 0.8rem;
+  cursor: pointer;
+  padding: 6px;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.copy-btn:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+pre {
+  margin: 0;
+  padding: 16px;
+  overflow-x: auto;
+  border-bottom-left-radius: 6px;
+  border-bottom-right-radius: 6px;
+}
+
+/* Override Highlight.js default padding to use our sleek wrapper padding */
+.hljs {
+  background: transparent !important;
+  padding: 0 !important;
+}
+
+code {
+  font-family: Consolas, Monaco, "Andale Mono", "Ubuntu Mono", monospace;
+  font-size: 0.9rem;
+}
+
+/* Style inline code differently than code blocks */
+:not(pre) > code {
+  background-color: rgba(255, 255, 255, 0.1);
+  padding: 2px 4px;
+  border-radius: 4px;
+}
+
+/* --- Message Action Buttons (Edit/Copy) --- */
+.message-actions {
+  display: flex;
+  gap: 12px;
+  margin-top: 12px;
+}
+
+.user .message-actions {
+  margin-top: 4px;
+  margin-right: 8px;
+  gap: 8px;
+}
+
+.action-btn {
+  position: relative;
+  right: auto;
+  bottom: auto;
+  background: transparent;
+  color: #ececf1;
+  border: none;
+  font-size: 1rem; /* Larger icon */
+  cursor: pointer;
+  padding: 6px; /* Tighter padding */
+  border-radius: 6px;
+  opacity: 0.6;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.action-btn:hover {
+  background: rgba(255, 255, 255, 0.1);
+  opacity: 1;
+}
+
+/* --- Header Bot Copy Button --- */
+.bot-copy-btn {
+  position: sticky;
+  top: 16px;
+  float: right;
+  margin-top: -4px;
+  margin-right: -4px;
+  background: transparent;
+  color: #ececf1;
+  border: none;
+  font-size: 1rem;
+  cursor: pointer;
+  padding: 6px;
+  border-radius: 6px;
+  opacity: 0.6;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.3s, opacity 0.3s;
+  z-index: 10;
+}
+
+.bot-copy-btn:hover {
+  background: rgba(255, 255, 255, 0.1);
+  opacity: 1;
+}
+
+/* --- Inline Edit UI --- */
+.edit-container {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 8px;
+}
+
+.edit-textarea {
+  width: 100%;
+  min-height: 44px; /* Smaller starting box just like ChatGPT */
+  padding: 10px 14px;
+  border-radius: 12px; /* Smoother curve */
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  background-color: #1e1e1e; /* Deep code-editor background */
+  color: #a6e22e; /* Monokai Syntax Green */
+  font-family: Consolas, Monaco, "Andale Mono", monospace;
+  font-size: 1rem;
+  line-height: 1.5;
+  resize: none; /* Auto-expands via JS, removing manual drag */
+  overflow-y: hidden;
+  box-sizing: border-box;
+  outline: none;
+}
+
+.edit-textarea:focus {
+  border-color: rgba(255, 255, 255, 0.4);
+}
+
+.edit-btn-container {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+.save-edit-btn, .cancel-edit-btn {
+  position: relative;
+  right: auto;
+  bottom: auto;
+  padding: 8px 16px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  border: none;
+}
+
+.save-edit-btn {
+  background: #10a37f;
+  color: white;
+}
+
+.save-edit-btn:hover {
+  background: #1a7f64;
+}
+
+.btn-spinner {
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  border: 2px solid rgba(255,255,255,0.3);
+  border-radius: 50%;
+  border-top-color: #fff;
+  animation: spin 0.8s linear infinite;
+  vertical-align: middle;
+}
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.cancel-edit-btn {
+  background: transparent;
+  color: #ececf1;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.cancel-edit-btn:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+

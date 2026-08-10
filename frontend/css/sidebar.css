@@ -1,0 +1,386 @@
+/* ==============================================
+   KODA Sidebar — Navigation, Dropdowns & Modals
+   Sidebar layout, brand, nav, search, settings, memory modal
+============================================== */
+/* --- Sidebar Layout --- */
+.sidebar {
+  width: 260px;
+  height: 100%;
+  height: 100dvh;
+  max-height: 100dvh;
+  background-color: #171717; /* Modern darker sidebar for contrast */
+  display: flex;
+  flex-direction: column;
+  padding: 12px;
+  box-sizing: border-box;
+  flex-shrink: 0;
+  transition: width 0.3s ease-in-out, padding 0.3s ease-in-out;
+  overflow-x: hidden;
+  white-space: nowrap;
+}
+
+.sidebar.collapsed {
+  width: 64px;
+  padding-left: 10px;
+  padding-right: 10px;
+}
+
+/* Smooth fade for content that disappears on collapse */
+.hide-on-collapse {
+  transition: opacity 0.2s ease-in-out;
+}
+.sidebar.collapsed .hide-on-collapse {
+  opacity: 0;
+  pointer-events: none;
+  display: none;
+}
+
+/* --- Sidebar Top Controls & Search --- */
+.sidebar-top {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+/* 🚀 ChatGPT Layout: 3-line Hamburger Menu Button inside Sidebar Vertical Container */
+.sidebar-menu-btn {
+  display: flex !important;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: none;
+  color: #b4b4b4;
+  cursor: pointer;
+  width: 44px;
+  height: 44px;
+  border-radius: 6px;
+  transition: background 0.2s, color 0.2s;
+}
+.sidebar-menu-btn:hover { background: #2f2f2f; color: #ececf1; }
+
+/* Desktop (> 768px): Hide header icon so hamburger icon stays strictly inside sidebar vertical container */
+@media (min-width: 769px) {
+  #open-sidebar-btn {
+    display: none !important;
+  }
+}
+
+/* Mobile (<= 768px): Show 3-line hamburger icon in top header bar by default */
+@media (max-width: 768px) {
+  #open-sidebar-btn {
+    display: flex !important;
+  }
+}
+
+.sidebar-new-chat-btn {
+  background: transparent;
+  border: none;
+  color: #ececf1;
+  cursor: pointer;
+  width: 100%;
+  height: 44px;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  transition: background 0.2s;
+  padding: 0 12px;
+  margin-bottom: 8px;
+}
+.sidebar-new-chat-btn:hover { background: #2f2f2f; }
+.sidebar-new-chat-btn .icon { display: flex; align-items: center; justify-content: center; width: 20px; }
+.sidebar-new-chat-btn .text { margin-left: 12px; font-size: 0.95rem; }
+
+.sidebar.collapsed .sidebar-new-chat-btn,
+.sidebar.collapsed .settings-btn {
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  justify-content: center;
+}
+.sidebar.collapsed .sidebar-new-chat-btn .text,
+.sidebar.collapsed .settings-btn .text {
+  display: none;
+}
+
+.sidebar-search {
+  display: flex;
+  align-items: center;
+  background-color: transparent;
+  border-radius: 6px;
+  padding: 8px 12px;
+  margin-bottom: 8px;
+  border: 1px solid transparent;
+  transition: background-color 0.2s, border-color 0.2s;
+}
+.sidebar-search:hover, .sidebar-search:focus-within {
+  background-color: #212121;
+  border-color: rgba(255, 255, 255, 0.1);
+}
+.sidebar-search .search-icon { color: #b4b4b4; margin-right: 8px; }
+
+.main-content {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  height: 100dvh;
+  position: relative;
+  min-width: 0;
+  overflow: hidden;
+  transition: margin-right 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* --- Centered 'New Chat' State --- */
+.main-content.empty-chat #chatbox {
+  display: none; /* Hide chatbox entirely when empty */
+}
+.main-content.empty-chat .input-area {
+  background-image: none; /* Remove bottom fade gradient */
+  margin: auto 0; /* Perfectly centers the input between the header and bottom */
+  transform: translateY(-8vh); /* Lift slightly above absolute center */
+}
+.welcome-screen {
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 32px;
+  text-align: center;
+}
+.welcome-screen h2 {
+  font-size: 1.8rem;
+  font-weight: 500;
+  margin: 0;
+  color: #ececf1;
+}
+
+.greeting-sub {
+  color: #b4b4b4;
+  font-size: 1.4rem;
+  font-weight: 400;
+  margin-top: 10px;
+  display: block;
+}
+
+.main-content.empty-chat .welcome-screen {
+  display: flex;
+}
+
+/* --- Sidebar Brand Logo --- */
+.sidebar-brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 5px 5px 20px 5px;
+}
+.sidebar-brand h2 {
+  margin: 0;
+  font-size: 1.2rem;
+  color: #ececf1;
+}
+
+.history-list {
+  flex-grow: 1;
+  min-height: 0; /* CRITICAL FIX: Constrains the list so the scrollbar actually appears! */
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding-right: 4px; /* Extra room so the scrollbar doesn't cover text */
+  scrollbar-width: thin; /* Firefox support */
+}
+
+.history-item {
+  padding: 8px 12px;
+  margin: 0 4px;
+  background: transparent;
+  color: #ececf1;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.85rem;
+  white-space: nowrap;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.history-item:hover {
+  background: #2f2f2f;
+}
+.history-item.active {
+  background: #212121;
+}
+
+.session-actions {
+  display: flex;
+  gap: 8px;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+  align-items: center;
+}
+.history-item:hover .session-actions {
+  opacity: 1;
+}
+
+/* --- Chat Options Dropdown --- */
+.chat-options-dropdown {
+  position: absolute;
+  background-color: #212121;
+  border: 1px solid #2f2f2f;
+  border-radius: 8px;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+  z-index: 2001;
+  display: flex;
+  flex-direction: column;
+  padding: 6px;
+  visibility: hidden;
+  opacity: 0;
+  transform: translateY(5px);
+  transition: opacity 0.2s ease, transform 0.2s ease, visibility 0.2s;
+  min-width: 140px;
+}
+.chat-options-dropdown.show {
+  visibility: visible;
+  opacity: 1;
+  transform: translateY(0);
+}
+.chat-options-dropdown button {
+  background: transparent; border: none; color: #ececf1; padding: 8px 12px;
+  text-align: left; cursor: pointer; border-radius: 4px; font-size: 0.9rem;
+  display: flex; align-items: center; gap: 10px;
+}
+.chat-options-dropdown button:hover { background: #2f2f2f; }
+.chat-options-dropdown button.delete-opt { color: #ff6b6b; }
+.chat-options-dropdown button.delete-opt:hover { background: rgba(255, 107, 107, 0.1); }
+
+.options-btn {
+  color: #b4b4b4;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px;
+  border-radius: 4px;
+}
+.options-btn:hover { color: #ececf1; background: rgba(255, 255, 255, 0.1); }
+
+/* --- Sidebar Footer & Settings --- */
+.sidebar-footer {
+  padding-top: 10px;
+  border-top: 1px solid #2f2f2f;
+  margin-top: auto;
+}
+.settings-btn {
+  width: 100%;
+  background: transparent;
+  border: none;
+  color: #ececf1;
+  display: flex;
+  align-items: center;
+  padding: 10px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.95rem;
+  transition: background 0.3s;
+  overflow: hidden;
+  white-space: nowrap;
+}
+.settings-btn:hover { background: #2f2f2f; }
+.settings-btn .icon { font-size: 1.1rem; display: flex; align-items: center; justify-content: center; width: 20px; }
+.settings-btn .text { margin-left: 12px; opacity: 1; transition: opacity 0.2s ease; }
+
+/* --- Search Modal Styles --- */
+.search-result-item {
+  padding: 12px 16px;
+  border-radius: 8px;
+  cursor: pointer;
+  color: #ececf1;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  transition: background 0.2s;
+}
+.search-result-item:hover { background-color: #2f2f2f; }
+.search-result-title { font-weight: 600; font-size: 1rem; }
+.search-result-date { font-size: 0.85rem; color: #b4b4b4; }
+
+/* --- Settings Dropdown Popover --- */
+.settings-dropdown {
+  visibility: hidden;
+  opacity: 0;
+  transform: translateY(10px);
+  transition: opacity 0.2s ease, transform 0.2s ease, visibility 0.2s;
+  display: flex;
+  position: fixed;
+  bottom: 64px;
+  left: 12px;
+  background-color: #212121;
+  border: 1px solid #2f2f2f;
+  border-radius: 8px;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+  z-index: 2001;
+  flex-direction: column;
+  width: 200px;
+  padding: 8px;
+}
+.settings-dropdown.show {
+  visibility: visible;
+  opacity: 1;
+  transform: translateY(0);
+}
+.settings-dropdown button {
+  background: transparent;
+  border: none;
+  color: #ececf1;
+  padding: 10px 12px;
+  text-align: left;
+  cursor: pointer;
+  border-radius: 6px;
+  font-size: 0.95rem;
+  transition: background 0.2s, color 0.2s;
+}
+.settings-dropdown button:hover { background: #2f2f2f; }
+.settings-dropdown .logout-menu-btn:hover { color: #ff6b6b; }
+
+/* --- Memory Modal Styling --- */
+.modal-overlay {
+  position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0,0,0,0.6); display: flex; align-items: center; justify-content: center; z-index: 9999;
+}
+.modal-content {
+  background: #212121; padding: 24px; border-radius: 12px; width: 320px;
+  border: 1px solid #2f2f2f; box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+}
+.modal-content h3 { margin-top: 0; color: #ececf1; }
+.modal-content p { color: #b4b4b4; font-size: 0.85rem; margin-bottom: 20px; }
+.modal-content label { display: block; margin-bottom: 6px; font-size: 0.9rem; color: #ececf1; }
+.modal-content input {
+  width: 100%; padding: 10px; margin-bottom: 16px; background: #2f2f2f; border: 1px solid rgba(255,255,255,0.1);
+  color: white; border-radius: 6px; box-sizing: border-box; outline: none;
+}
+.modal-content input:focus { border-color: #10a37f; }
+.modal-content select {
+  width: 100%; padding: 10px; margin-bottom: 16px; background: #2f2f2f; border: 1px solid rgba(255,255,255,0.1);
+  color: white; border-radius: 6px; box-sizing: border-box; outline: none; font-family: inherit; font-size: 0.9rem;
+}
+.modal-content select:focus { border-color: #10a37f; }
+.modal-actions { display: flex; justify-content: flex-end; gap: 10px; }
+.modal-actions button { padding: 8px 16px; border-radius: 6px; cursor: pointer; border: none; font-size: 0.9rem; }
+.modal-content h3 { color: #ececf1; }
+.modal-desc { color: #b4b4b4; }
+.cancel-btn { background: transparent; color: #ececf1; border: 1px solid rgba(255,255,255,0.2); }
+.cancel-btn:hover { background: rgba(255,255,255,0.1); }
+.save-btn { background: #10a37f; color: white; }
+.save-btn:hover { background: #1a7f64; }
+
+.logout-modal-btn {
+  background: transparent;
+  color: #ff6b6b;
+  border: 1px solid #ff6b6b;
+  padding: 8px 16px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: background 0.3s, color 0.3s;
+}
+.logout-modal-btn:hover { background: #ff6b6b; color: white; }

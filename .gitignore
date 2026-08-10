@@ -1,0 +1,91 @@
+# ==========================================
+# 1. Environment Variables & Secrets (CRITICAL)
+# ==========================================
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.p12
+
+# ==========================================
+# 2. Databases & Local Persistence
+# ==========================================
+chat_history.db
+*.db
+*.sqlite
+*.sqlite3
+qdrant_db/
+
+# ==========================================
+# 3. User Uploads & Temporary Documents
+# ==========================================
+uploads/
+temp_docs/
+
+# ==========================================
+# 4. Local AI Models & Large Weights
+# ==========================================
+local_ai_models/
+backend/model/
+*.bin
+*.safetensors
+*.onnx
+*.xml
+*.gguf
+*.pt
+*.pth
+
+
+# ==========================================
+# 5. Python Bytecode & Cache Files
+# ==========================================
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+.coverage
+htmlcov/
+.nox/
+.tox/
+.mypy_cache/
+.ruff_cache/
+
+# ==========================================
+# 6. Virtual Environments
+# ==========================================
+venv/
+.venv/
+env/
+ENV/
+
+# ==========================================
+# 7. Node / Frontend Dependencies & Build Output
+# ==========================================
+node_modules/
+dist/
+build/
+.next/
+
+# ==========================================
+# 8. IDE & Editor Configurations
+# ==========================================
+.vscode/
+.idea/
+*.swp
+*.swo
+*.sublime-workspace
+*.sublime-project
+
+# ==========================================
+# 9. Operating System & Metadata Files
+# ==========================================
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# ==========================================
+# 10. Log Files
+# ==========================================
+*.log
+logs/

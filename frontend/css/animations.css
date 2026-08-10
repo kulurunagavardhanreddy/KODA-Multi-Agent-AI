@@ -1,0 +1,252 @@
+﻿/* ==============================================
+   KODA Animations — Motion, Thinking & Voice
+   Thinking spinners, vision scanner, voice overlay, dictation, suggestion pills, branching
+============================================== */
+/* --- Generated Image Styling --- */
+.message-content img {
+  max-width: 100%;
+  border-radius: 8px;
+  margin-top: 12px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+}
+
+/* --- Attachment Badge --- */
+#attach-badge img {
+  width: 24px; height: 24px; border-radius: 4px;
+  object-fit: cover; margin-right: 6px;
+}
+
+#attach-badge {
+  position: absolute;
+  top: -45px;
+  left: 10px;
+  background-color: #444654;
+  padding: 6px 12px;
+  border-radius: 8px;
+  font-size: 0.85rem;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  border: 1px solid rgba(255,255,255,0.1);
+  box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+  color: #ececf1;
+  z-index: 10;
+}
+
+.remove-attach-btn {
+  cursor: pointer;
+  color: #ff6b6b;
+  font-weight: bold;
+  margin-left: 4px;
+}
+.remove-attach-btn:hover {
+  color: #ff4c4c;
+}
+
+/* --- Advanced Thinking Animation --- */
+.advanced-thinking {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  color: #ececf1; /* Removed green, using standard theme color */
+  font-size: 0.95rem;
+  font-style: italic;
+  padding: 8px 0;
+  animation: pulseText 1.5s infinite ease-in-out;
+}
+
+.fan-spinner {
+  position: relative;
+  width: 24px;
+  height: 24px;
+  animation: spin 0.8s linear infinite; /* Fast spin like a fan */
+}
+
+.fan-spinner span {
+  position: absolute;
+  width: 4px;
+  height: 4px;
+  background: #ececf1;
+  border-radius: 50%;
+  top: 50%;
+  left: 50%;
+  margin-top: -2px;
+  margin-left: -2px;
+}
+
+/* 5 dots arranged in a perfect circle */
+.fan-spinner span:nth-child(1) { transform: rotate(0deg) translateY(-10px); opacity: 1; }
+.fan-spinner span:nth-child(2) { transform: rotate(72deg) translateY(-10px); opacity: 0.8; }
+.fan-spinner span:nth-child(3) { transform: rotate(144deg) translateY(-10px); opacity: 0.6; }
+.fan-spinner span:nth-child(4) { transform: rotate(216deg) translateY(-10px); opacity: 0.4; }
+.fan-spinner span:nth-child(5) { transform: rotate(288deg) translateY(-10px); opacity: 0.2; }
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+@keyframes pulseText {
+  0%, 100% { opacity: 0.7; }
+  50% { opacity: 1; }
+}
+
+/* --- Vision Scanning Animation --- */
+.vision-mode {
+  color: #00d2ff !important;
+}
+.vision-spinner {
+  position: relative;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.vision-spinner svg {
+  animation: pulseEye 1.5s infinite ease-in-out;
+}
+.scanner-line {
+  position: absolute;
+  width: 100%;
+  height: 2px;
+  background: rgba(0, 210, 255, 0.8);
+  box-shadow: 0 0 8px #00d2ff;
+  top: 0;
+  animation: scan 1.2s linear infinite alternate;
+}
+@keyframes pulseEye {
+  0%, 100% { opacity: 0.5; transform: scale(0.9); }
+  50% { opacity: 1; transform: scale(1.05); }
+}
+@keyframes scan {
+  0% { top: 10%; opacity: 0; }
+  10% { opacity: 1; }
+  90% { opacity: 1; }
+  100% { top: 90%; opacity: 0; }
+}
+
+/* --- Suggestion Pills --- */
+.suggestion-pill {
+  display: inline-block;
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  color: #ececf1;
+  padding: 8px 16px;
+  border-radius: 20px;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: background 0.2s ease, border-color 0.2s ease;
+  line-height: 1.4;
+  text-align: left;
+}
+.suggestion-pill:hover {
+  background: #2f2f2f;
+  border-color: #ececf1;
+}
+
+/* --- Advanced Voice Mode Overlay --- */
+#voice-visualizer {
+  display: flex;
+  gap: 6px;
+  height: 80px;
+  align-items: center;
+  margin-bottom: 30px;
+}
+
+#voice-visualizer .bar {
+  width: 8px;
+  height: 12px;
+  border-radius: 4px;
+  transition: background-color 0.3s, height 0.05s ease-out;
+}
+
+/* Listening State */
+#voice-visualizer.listening .bar { background-color: #00d2ff; animation: voice-wave 1s infinite ease-in-out; }
+/* Speaking State */
+#voice-visualizer.speaking .bar { background-color: #10a37f; animation: voice-wave-fast 0.5s infinite ease-in-out; }
+/* Thinking State */
+#voice-visualizer.thinking .bar { background-color: #ececf1; height: 12px; animation: voice-pulse 1.5s infinite ease-in-out; }
+
+#voice-visualizer .bar:nth-child(1) { animation-delay: 0.0s; }
+#voice-visualizer .bar:nth-child(2) { animation-delay: 0.1s; }
+#voice-visualizer .bar:nth-child(3) { animation-delay: 0.2s; }
+#voice-visualizer .bar:nth-child(4) { animation-delay: 0.3s; }
+#voice-visualizer .bar:nth-child(5) { animation-delay: 0.4s; }
+
+@keyframes voice-wave { 0%, 100% { height: 12px; } 50% { height: 50px; } }
+@keyframes voice-wave-fast { 0%, 100% { height: 16px; } 50% { height: 70px; } }
+@keyframes voice-pulse { 0%, 100% { opacity: 0.4; transform: scale(1); } 50% { opacity: 1; transform: scale(1.3); } }
+
+#voice-text {
+  color: #fff;
+  font-size: 1.8rem;
+  text-align: center;
+  max-width: 70%;
+  min-height: 60px;
+  margin-bottom: 50px;
+  font-weight: 300;
+  line-height: 1.4;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.voice-close-btn {
+  background: #ff4a4a; color: white; border: none; border-radius: 50%;
+  width: 64px; height: 64px; cursor: pointer; display: flex; align-items: center; justify-content: center;
+  box-shadow: 0 4px 15px rgba(255, 74, 74, 0.4); transition: transform 0.2s;
+}
+.voice-close-btn:hover {
+  transform: scale(1.08);
+  background: #ff3333;
+}
+
+/* --- Dictation Waveform Visualizer --- */
+#dictation-visualizer .dict-bar {
+  width: 4px;
+  height: 12px;
+  background-color: #00d2ff;
+  border-radius: 2px;
+  animation: dict-wave 1s infinite ease-in-out;
+}
+#dictation-visualizer .dict-bar:nth-child(1) { animation-delay: 0.0s; }
+#dictation-visualizer .dict-bar:nth-child(2) { animation-delay: 0.15s; }
+#dictation-visualizer .dict-bar:nth-child(3) { animation-delay: 0.3s; }
+#dictation-visualizer .dict-bar:nth-child(4) { animation-delay: 0.45s; }
+#dictation-visualizer .dict-bar:nth-child(5) { animation-delay: 0.6s; }
+
+@keyframes dict-wave {
+  0%, 100% { height: 6px; }
+  50% { height: 18px; }
+}
+
+/* --- Branching Memory UI --- */
+.branch-container {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+.branch-content {
+  display: none;
+  width: 100%;
+}
+.branch-content.active {
+  display: block;
+}
+.branch-controls {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  color: #b4b4b4;
+  font-size: 0.85rem;
+  user-select: none;
+}
+.branch-btn {
+  background: transparent; border: none; color: #ececf1; cursor: pointer; padding: 2px 6px; border-radius: 4px; font-size: 0.85rem;
+}
+.branch-btn:hover:not(:disabled) { background: rgba(255,255,255,0.1); }
+.branch-btn:disabled { opacity: 0.3; cursor: default; }
+
