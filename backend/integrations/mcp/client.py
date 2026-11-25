@@ -22,6 +22,7 @@ class MCPClient:
         self._read_thread: Optional[threading.Thread] = None
         self._stderr_thread: Optional[threading.Thread] = None
         self._pending_requests: Dict[str, asyncio.Future] = {}
+        self._recent_stderr: List[str] = []
         self._request_counter = 0
 
     async def connect(self):
@@ -99,6 +100,23 @@ class MCPClient:
                 self._loop.call_soon_threadsafe(self._handle_incoming_line, line)
         except Exception as e:
             logger.error("[MCP Client Error] Error in stdout reader loop for '%s': %s", self.name, e)
+        finally:
+            if self._loop and not self._loop.is_closed():
+                self._loop.call_soon_threadsafe(self._fail_pending_on_eof)
+
+    def _fail_pending_on_eof(self):
+        """Fails any pending RPC requests immediately if the server process exits early."""
+        if not self._pending_requests:
+            return
+        exit_code = self.process.poll() if self.process else None
+        stderr_tail = " | ".join(self._recent_stderr[-5:]) if self._recent_stderr else "no stderr output"
+        err = MCPConnectionError(
+            f"MCP server '{self.name}' closed stdout unexpectedly (exit_code={exit_code}): {stderr_tail}"
+        )
+        for fut in list(self._pending_requests.values()):
+            if not fut.done():
+                fut.set_exception(err)
+        self._pending_requests.clear()
 
     def _stderr_reader_loop(self):
         """Continuously reads standard error stream and outputs to python logs for diagnostics."""
@@ -107,7 +125,12 @@ class MCPClient:
                 line = self.process.stderr.readline()
                 if not line:
                     break
-                logger.debug("[MCP STDERR %s] %s", self.name, line.decode("utf-8").strip())
+                msg = line.decode("utf-8", errors="replace").strip()
+                if msg:
+                    self._recent_stderr.append(msg)
+                    if len(self._recent_stderr) > 20:
+                        self._recent_stderr.pop(0)
+                    logger.debug("[MCP STDERR %s] %s", self.name, msg)
         except Exception as e:
             pass
 
@@ -127,7 +150,12 @@ class MCPClient:
         except Exception as je:
             logger.warning("[MCP Client Warning] Failed to parse stdout line from '%s': %s", self.name, je)
 
-    async def send_rpc_request(self, method: str, params: Optional[Dict[str, Any]] = None) -> Any:
+    async def send_rpc_request(
+        self,
+        method: str,
+        params: Optional[Dict[str, Any]] = None,
+        timeout: float = 15.0,
+    ) -> Any:
         """Sends a JSON-RPC request to the MCP server and awaits the response."""
         if not self.process or not self.process.stdin:
             raise MCPConnectionError(f"MCP server '{self.name}' is not connected.")
@@ -158,8 +186,8 @@ class MCPClient:
             raise MCPConnectionError(f"Failed to write payload to subprocess stdin for '{self.name}': {e}")
             
         try:
-            # Wait for response with timeout (e.g. 15 seconds)
-            response_data = await asyncio.wait_for(future, timeout=15.0)
+            # Wait for response with configurable timeout
+            response_data = await asyncio.wait_for(future, timeout=timeout)
             
             response = JSONRPCResponse(**response_data)
             if response.error:
@@ -201,7 +229,7 @@ class MCPClient:
             "capabilities": {},
             "clientInfo": {"name": "koda-client", "version": "1.0.0"}
         }
-        await self.send_rpc_request("initialize", params)
+        await self.send_rpc_request("initialize", params, timeout=45.0)
         await self.send_rpc_notification("notifications/initialized")
         logger.info("[MCP] Handshake success for '%s'!", self.name)
 

@@ -21,21 +21,55 @@ class MCPManager:
             logger.info("🔌  MCP              │ No servers configured")
             return
 
-        # Override filesystem allowed directory with active user workspace from SQLite
-        if "filesystem" in configs:
-            from backend.database.chat_database import DB_PATH
+        # Resolve filesystem directory dynamically (no hardcoded user paths)
+        if "filesystem" in configs and configs["filesystem"].args:
+            import os
             import sqlite3
+            from backend.database.chat_database import DB_PATH
+
+            root_dir = os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
+            default_uploads = os.path.join(root_dir, "uploads")
+            os.makedirs(default_uploads, exist_ok=True)
+
+            configured_arg = configs["filesystem"].args[-1]
+            resolved_path = (
+                configured_arg
+                if os.path.isabs(configured_arg)
+                else os.path.abspath(os.path.join(root_dir, configured_arg))
+            )
+
             conn = sqlite3.connect(DB_PATH, timeout=15.0)
             try:
                 cursor = conn.cursor()
                 cursor.execute("SELECT path FROM user_workspaces WHERE is_active = 1 LIMIT 1")
                 row = cursor.fetchone()
-                if row:
-                    configs["filesystem"].args[-1] = row[0]
+                if row and row[0]:
+                    candidate = row[0].strip()
+                    if candidate == "uploads" or not os.path.isabs(candidate):
+                        candidate = os.path.abspath(os.path.join(root_dir, candidate))
+                    if os.path.isdir(candidate):
+                        resolved_path = candidate
+                    else:
+                        logger.warning(
+                            "⚠️  MCP filesystem   │ Active workspace '%s' not found; falling back to '%s'",
+                            candidate,
+                            default_uploads,
+                        )
+                        resolved_path = default_uploads
             except Exception as dbe:
                 logger.warning("⚠️  MCP filesystem   │ Could not load workspace path: %s", dbe)
             finally:
                 conn.close()
+
+            if not os.path.isdir(resolved_path):
+                logger.warning(
+                    "⚠️  MCP filesystem   │ Configured path '%s' not found; falling back to '%s'",
+                    resolved_path,
+                    default_uploads,
+                )
+                resolved_path = default_uploads
+
+            configs["filesystem"].args[-1] = resolved_path
 
         import asyncio
         start_tasks = []
